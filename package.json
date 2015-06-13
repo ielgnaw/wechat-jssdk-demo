@@ -1,0 +1,18 @@
+{
+  "name": "wechat-jssdk-demo",
+  "description": "Wechat jssdk demo",
+  "version": "0.0.1-beta.1",
+  "contributors": [
+    {
+      "name": "ielgnaw",
+      "email": "wuji0223@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "body-parser": "1.10.x",
+    "edp-core": "^1.0.31",
+    "express": "4.x",
+    "jssha": "^1.6.0"
+  },
+  "main": "start.js"
+}
