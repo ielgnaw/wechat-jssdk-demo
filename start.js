@@ -1,13 +1,12 @@
 /**
- * @file 启动edp web
- * @author errorrik[errorrik@gmail.com]
+ * @file 启动
+ * @author ielgnaw(wuji0223@gmail.com)
  */
 
 var express = require('express');
 var edp = require('edp-core');
 var path = require('path');
 var fs = require('fs');
-// var util = require('./util');
 
 /**
  * 机器ip
@@ -51,11 +50,8 @@ function start(port) {
     });
 
     var server = app.listen(port);
-    // var io = startWebSocketServer(server);
 
-    // extensionInit(app, io);
-
-    edp.log.info('Edp Web start.');
+    edp.log.info('Web start.');
     edp.log.info('Visit ' + underlineString('http://localhost:' + port)
         + ' or ' + underlineString('http://' + ip + ':' + port));
     edp.log.info('To stop, Press Ctrl+C');
