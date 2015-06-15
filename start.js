@@ -57,7 +57,7 @@ function start(port) {
     edp.log.info('To stop, Press Ctrl+C');
 }
 
-start(8000);
+start(8002);
 
 /**
  * 对输出命令行的字符串添加下划线
