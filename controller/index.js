@@ -14,8 +14,10 @@ var util = require('../util');
  * @type {Object}
  */
 var APP_CONFIG = {
-    appid: 'wxa0f06601f19433af',
-    secret: '097fd14bac218d0fb016d02f525d0b1e'
+    // appid: 'wxa0f06601f19433af',
+    // secret: '097fd14bac218d0fb016d02f525d0b1e'
+    appid: 'wxde2318072350bd03',
+    secret: 'be0ab502d47d9cbd51da2eb57e5bf0c6'
 };
 
 /**
