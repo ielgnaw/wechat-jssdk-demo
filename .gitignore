@@ -5,4 +5,5 @@ Thumbs.db
 .DS_Store
 *.swp
 .jshintrc
-微信 api 流程.txt
+wechat-api-process.txt
+nohup.out
