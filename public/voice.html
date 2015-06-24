@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Voice Demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+        <link rel="stylesheet" href="src/css/index.css">
+        <script src="dep/esl/esl.js"></script>
+    </head>
+    <body>
+        <div class="wxapi_container">
+            <div class="lbox_close wxapi_form">
+                <button class="btn btn_primary" id="press">按住说话</button>
+                <!-- <button class="btn btn_primary" id="playVoice">播放</button> -->
+                <!-- <span class="desc">停止录音接口</span>
+                <button class="btn btn_primary" id="stopRecord">stopRecord</button>
+                <span class="desc">播放语音接口</span>
+                <button class="btn btn_primary" id="playVoice">playVoice</button>
+                <span class="desc">暂停播放接口</span>
+                <button class="btn btn_primary" id="pauseVoice">pauseVoice</button>
+                <span class="desc">停止播放接口</span>
+                <button class="btn btn_primary" id="stopVoice">stopVoice</button>
+
+                <h3 id="menu-smart">智能接口</h3>
+                <span class="desc">识别音频并返回识别结果接口</span>
+                <button class="btn btn_primary" id="translateVoice">translateVoice</button> -->
+
+            </div>
+        </div>
+        <script src="/require.config.js"></script>
+        <script>
+            require(['voice'], function (voice) {
+                voice.start();
+            });
+        </script>
+    </body>
+</html>

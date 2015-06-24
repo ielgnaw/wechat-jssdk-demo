@@ -4,7 +4,7 @@
  */
 
 define(function (require) {
-    alert('test')
+
     var wx = require('wx');
 
     /**
