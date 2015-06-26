@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Voice Demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+        <link rel="stylesheet" href="src/css/index1.css">
+        <script src="dep/esl/esl.js"></script>
+    </head>
+    <body>
+        <div id="close"></div>
+        <p id="before_result"></p>
+        <p id="result"></p>
+        <div class="wxapi_container">
+            <section class="suggestion">
+                <p>您可以这样说</p>
+                <ul>
+                    <li><a href="">我要查分</a></li>
+                    <li><a href="">我要红包</a></li>
+                    <li><a href="">小度机器人</a></li>
+                </ul>
+            </section>
+            <div id="voice">
+                <div class="voice_inner">
+                    <div class="btn" id="press" src="/src/img/start_btn.png"/></div>
+                    <!--img class="btn" id="press" src="/src/img/start_btn.png"/-->
+                    <div class="round1 round"></div>
+                    <div class="round2 round"></div>
+                </div>
+            </div>
+        </div>
+        <script src="/require.config.js"></script>
+        <script>
+            require(['voice1'], function (voice1) {
+                voice1.start();
+            });
+        </script>
+    </body>
+</html>
