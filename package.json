@@ -12,7 +12,8 @@
     "body-parser": "1.10.x",
     "edp-core": "^1.0.31",
     "express": "4.x",
-    "jssha": "^1.6.0"
+    "jssha": "^1.6.0",
+    "moment": "~2.5.1"
   },
   "main": "start.js"
 }
