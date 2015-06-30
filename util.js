@@ -20,7 +20,7 @@ exports.jsonResponse = function (res, data, errorMsg) {
     });
 
     if (errorMsg) {
-        res.json({status: 1, message: info, data: data});
+        res.json({status: 1, message: errorMsg, data: data});
     }
     else {
         res.json({status: 0, data: data});

@@ -54,6 +54,7 @@ define(function (require) {
             console.warn('timestamp: ' + params.timestamp);
             console.warn('url: ' + params.url);
             console.log('signature: ' + params.signature);
+            console.log('accessToken: ' + params.accessToken);
             wxConfig(params);
             wx.ready(function () {
                 var voice = {
@@ -68,10 +69,10 @@ define(function (require) {
                 var oResult = document.querySelector('#result');
                 var oClose = document.querySelector('#close');
 
-                //用户点击关闭按钮
+                // 用户点击关闭按钮
                 oClose.addEventListener('click', function (e) {
                     wx.closeWindow();
-                })
+                });
                 // 按住超过 500 ms 才算是按住
                 var delay = 100;
                 var timer;
@@ -83,8 +84,7 @@ define(function (require) {
                             localId: '',
                             serverId: ''
                         };
-                        for(var i=0; i<oRounds.length; i++)
-                        {
+                        for (var i=0; i<oRounds.length; i++) {
                             oRounds[i].style.display = 'block';
                         }
                         oP.style.display = 'block';
@@ -103,39 +103,58 @@ define(function (require) {
                 pressNode.addEventListener('touchend', function (e) {
                     clearTimeout(timer);
                    // pressNode.innerHTML = '按住说话';
-                   for(var i=0; i<oRounds.length; i++)
-                    {
+                    for(var i=0; i<oRounds.length; i++) {
                         oRounds[i].style.display = 'none';
                     }
                     wx.stopRecord({
                         success: function (res) {
                             oP.style.display = 'none';
                             voice.localId = res.localId;
+
+                            // 识别音频并返回识别结果接口
                             wx.translateVoice({
                                 localId: voice.localId,
                                 complete: function (res) {
                                     if (res.hasOwnProperty('translateResult')) {
                                         var translateResult = res.translateResult.slice(0, -1);
-                                        oResult.innerHTML = translateResult;
-                                        setTimeout(function () {
-                                            window.location.href = 'http://m.baidu.com/s?word=' + translateResult;
-                                        }, 1000);
-                                    } else {
+                                        wx.uploadVoice({
+                                            localId: voice.localId, // 需要上传的音频的本地 ID，由 stopRecord 接口获得
+                                            isShowProgressTips: 1, // 默认为1，显示进度提示
+                                            success: function (res) {
+                                                voice.serverId = res.serverId; // 返回音频的服务器端 ID
+                                                $.ajax({
+                                                    method: 'GET',
+                                                    url: '/getVoice',
+                                                    data: {
+                                                        accessToken: params.accessToken,
+                                                        mediaId: voice.serverId
+                                                    }
+                                                }).done(function (data) {
+                                                    alert(data.data.chunks.length);
+                                                    oResult.innerHTML = translateResult;
+                                                    setTimeout(function () {
+                                                        window.location.href
+                                                            = 'http://m.baidu.com/s?word=' + translateResult;
+                                                    }, 1000);
+                                                });
+                                            }
+                                        });
+                                    }
+                                    else {
                                         alert('无法识别');
                                     }
+                                    voice = {
+                                        localId: '',
+                                        serverId: ''
+                                    };
                                 }
                             });
-
-                            voice = {
-                                localId: '',
-                                serverId: ''
-                            };
                         },
                         fail: function (res) {
                             oSuggestion.style.display = 'none';
                             oP.style.display = 'block';
                             oP.innerHTML = '😢抱歉无法识别';
-                            t = setTimeout(function(){
+                            t = setTimeout(function () {
                                 oP.style.display = 'none';
                                 oSuggestion.style.display = 'block';
                             },1500);
@@ -152,32 +171,11 @@ define(function (require) {
                     }
                 });
 
-                document.querySelector('#playVoice').onclick = function () {
-                    if (voice.localId == '') {
-                        alert('请先使用 startRecord 接口录制一段声音');
-                        return;
-                    }
-                    wx.playVoice({
-                        localId: voice.localId
-                    });
-
-                    wx.translateVoice({
-                        localId: voice.localId,
-                        complete: function (res) {
-                            if (res.hasOwnProperty('translateResult')) {
-                                alert('识别结果：' + res.translateResult);
-                            } else {
-                                alert('无法识别');
-                            }
-                        }
-                    });
-                };
-
             });
         });
     }
 
     return {
         start: start
-    }
+    };
 });

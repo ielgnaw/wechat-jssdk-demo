@@ -5,8 +5,31 @@
 
 var bodyParser = require('body-parser');
 var https = require('https');
+var http = require('http');
 var jsSHA = require('jssha');
+var moment = require('moment');
 var util = require('../util');
+
+var exec = require('child_process').exec;
+
+function writeLogFile(req, content, level) {
+    level = level || 'INFO';
+    try {
+        exec(
+            'echo '
+                + moment().format('YYYY-MM-DD HH:mm:ss')
+                + ' '
+                + level
+                + ': '
+                + content
+                + ' from '
+                + req.connection.remoteAddress
+                + ' >> ./voice.log'
+            );
+    } catch (e) {
+        console.log('writeLog has a error: ' + e.toString());
+    }
+}
 
 /**
  * 公众号配置
@@ -48,6 +71,7 @@ exports.init = function (app) {
 
     exports.routeRequireConfig(app);
     exports.routeWXConfig(app);
+    exports.routeGetVoice(app);
 };
 
 /**
@@ -126,7 +150,8 @@ exports.routeWXConfig = function (app) {
                 accessTokenStr += data;
             });
             _res.on('end', function () {
-                console.warn('get access_token: ' + accessTokenStr);
+                // console.warn('get access_token: ' + accessTokenStr);
+                writeLogFile(req, 'Request Path: /getConfig, get access_token: ' + accessTokenStr);
 
                 var accessTokenObj = {};
                 try {
@@ -137,10 +162,40 @@ exports.routeWXConfig = function (app) {
                     return;
                 }
 
-                getTicket(url, accessTokenObj, res);
+                getTicket(url, accessTokenObj, res, req);
             });
         });
 
+    });
+};
+
+
+var GET_VOICE_URL = 'http://file.api.weixin.qq.com/cgi-bin/media/get';
+
+exports.routeGetVoice = function (app) {
+    app.get('/getVoice', function (req, res) {
+        var getArgs = req.query;
+        // var postArgs = req.body;
+
+        writeLogFile(req, 'Request Path: /getVoice, params: ' + JSON.stringify(getArgs));
+
+        http.get(
+            GET_VOICE_URL + '?access_token=' + getArgs.accessToken + '&media_id=' + getArgs.mediaId,
+            function (_res) {
+                var chunks = [];
+
+                _res.on('data', function (chunk) {
+                    chunks.push(chunk);
+                });
+
+                _res.on('end', function () {
+                    // writeLogFile(req, 'chunks: ' + chunks);
+                    console.warn(chunks, 'chunks');
+                    util.jsonResponse(res, {chunks: chunks});
+                    return;
+                });
+            }
+        );
     });
 };
 
@@ -149,9 +204,10 @@ exports.routeWXConfig = function (app) {
  *
  * @param {string} url 用于签名的 url
  * @param {Object} accessData access_token 数据对象
- * @param {Object} res 相应对象
+ * @param {Object} res 响应对象
+ * @param {Object} req 请求对象
  */
-function getTicket(url, accessData, res) {
+function getTicket(url, accessData, res, req) {
     var getTicketUrl = ''
         + 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='
         + accessData.access_token
@@ -164,7 +220,8 @@ function getTicket(url, accessData, res) {
             ticketStr += data;
         });
         _res.on('end', function () {
-            console.warn('get ticket: ' + ticketStr);
+            // console.warn('get ticket: ' + ticketStr);
+            writeLogFile(req, 'Request Path: /getConfig, get ticket: ' + ticketStr);
             try {
                 ticketObj = JSON.parse(ticketStr);
             }
@@ -184,7 +241,8 @@ function getTicket(url, accessData, res) {
                 timestamp: timestamp,
                 signature: signature,
                 url: url,
-                ticket: ticket
+                ticket: ticket,
+                accessToken: accessData.access_token
             };
 
             util.jsonResponse(res, SIGNATURE_CACHE[url]);
