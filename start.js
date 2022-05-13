@@ -7,7 +7,7 @@ var express = require('express');
 var edp = require('edp-core');
 var path = require('path');
 var fs = require('fs');
-
+console.log(123);
 /**
  * 机器ip
  *
