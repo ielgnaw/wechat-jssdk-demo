@@ -6,3 +6,5 @@ wechat-jssdk-demo
     node start.js
     
     node start.js
+    
+    node start.js
